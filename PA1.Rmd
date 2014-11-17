@@ -10,13 +10,15 @@ output:
 
 ## Loading and preprocessing the data
 ```{r}
+require(plyr)
+require(lattice)
 data <- read.csv("activity.csv")
 summary(data)
 ```
 
 ## What is mean total number of steps taken per day?
 ```{r histogram, fig.height=4}
-require(plyr)
+
 total_steps_per_day <- ddply(data, .(date), summarise, total_steps = sum(steps))
 with(total_steps_per_day, hist(total_steps, main="Total Steps Per Day"))
 ```
@@ -101,7 +103,8 @@ Median total steps per day: `r median_total_steps_per_day_no_nas`
 Yes. The mean and median are now equal!
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+```{r panelplot, fig.height=4} 
+
 weekday_or_weekend <- function(date_factor) {
   result <- c()
   if (is.factor(date_factor)) {
@@ -123,5 +126,9 @@ weekday_or_weekend <- function(date_factor) {
 }
 
 data_no_nas_with_factors <- transform(data_no_nas, day_type = weekday_or_weekend(date))
+
+mean_steps_per_interval_day_types <- ddply(data_no_nas_with_factors, .(interval), summarise, mean_steps_per_interval = mean(steps, na.rm=TRUE))
+with(mean_steps_per_interval, plot(interval, mean_steps_per_interval_day_types, type='l', main = "Mean steps per interval averaged over each day"))
+with(mean_steps_per_interval_day_types, xyplot(steps ~ interval | day_type, layout = c(1,2), type="l"))
 
 ```
