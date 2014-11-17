@@ -2,8 +2,9 @@
 title: "Reproducible Research: Peer Assessment 1"
 author: Mick Hittesdorf
 date: "11/16/2014"
-output: html_document
-keep_md: true
+output: 
+  html_document:
+    keep_md: true
 ---
 
 
@@ -14,7 +15,7 @@ summary(data)
 ```
 
 ## What is mean total number of steps taken per day?
-```{r histogram}
+```{r histogram, fig.height=4}
 require(plyr)
 total_steps_per_day <- ddply(data, .(date), summarise, total_steps = sum(steps))
 with(total_steps_per_day, hist(total_steps, main="Total Steps Per Day"))
@@ -36,7 +37,7 @@ Median total steps per day: `r median_total_steps_per_day`
 
 #### Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
-```{r}
+```{r scatterplot, fig.height=4}
 mean_steps_per_interval <- ddply(data, .(interval), summarise, mean_steps_per_interval = mean(steps, na.rm=TRUE))
 with(mean_steps_per_interval, plot(interval, mean_steps_per_interval, type='l', main = "Mean steps per interval averaged over each day"))
 
@@ -77,7 +78,7 @@ data_no_nas$steps[na_indices] <- ordered$mean_steps_per_interval[na_indices]
 
 #### Plot a histogram again after missing data has been imputed
 
-```{r}
+```{r histogram2, fig.height=4}
 total_steps_per_day_no_nas <- ddply(data_no_nas, .(date), summarise, total_steps = sum(steps))
 with(total_steps_per_day_no_nas, hist(total_steps, main="Total Steps Per Day"))
 
@@ -121,6 +122,6 @@ weekday_or_weekend <- function(date_factor) {
   return(result)
 }
 
-data_no_nas_with_factors <- transform(data_no_nas, new = day_type = factor(weekday_or_weekend(date)))
+data_no_nas_with_factors <- transform(data_no_nas, day_type = weekday_or_weekend(date))
 
 ```
