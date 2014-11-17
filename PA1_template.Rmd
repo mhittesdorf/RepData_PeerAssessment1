@@ -17,7 +17,7 @@ summary(data)
 ```
 
 ## What is mean total number of steps taken per day?
-```{r histogram}
+```{r histogram_of_total_steps_per_day}
 require(plyr)
 total_steps_per_day <- ddply(data, .(date), summarise, total_steps = sum(steps))
 with(total_steps_per_day, hist(total_steps, main="Total Steps Per Day"))
@@ -25,7 +25,7 @@ with(total_steps_per_day, hist(total_steps, main="Total Steps Per Day"))
 
 #### Calculate and report the mean and median total steps per day
 
-```{r}
+```{r calculate_mean_and_median_of_total_steps_per_day}
 mean_total_steps_per_day <- sprintf("%.2f", with(total_steps_per_day, mean(total_steps, na.rm = TRUE)))
 median_total_steps_per_day <- sprintf("%.2f", with(total_steps_per_day, median(total_steps, na.rm = TRUE)))
 
@@ -39,7 +39,7 @@ Median total steps per day: `r median_total_steps_per_day`
 
 #### Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
-```{r}
+```{r plot_intervals}
 mean_steps_per_interval <- ddply(data, .(interval), summarise, mean_steps_per_interval = mean(steps, na.rm=TRUE))
 with(mean_steps_per_interval, plot(interval, mean_steps_per_interval, type='l', main = "Mean steps per interval averaged over each day"))
 
@@ -47,7 +47,7 @@ with(mean_steps_per_interval, plot(interval, mean_steps_per_interval, type='l', 
 
 #### Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+```{r find_max_interval}
 max_steps_per_interval_index <- with(mean_steps_per_interval, which(mean_steps_per_interval == max(mean_steps_per_interval)))
 max_interval_number <- mean_steps_per_interval[max_steps_per_interval_index,1]
 ```
@@ -57,7 +57,7 @@ Interval with the maximum average daily number of steps: `r max_interval_number`
 ## Imputing missing values
 
 #### Calculate and report the total number of missing values in the dataset (i.e .the total number of rows with NA's)
-```{r}
+```{r calculate_number_of_missing_values}
 total_number_missing_values <- sum(with(data, is.na(steps)))
 ```
 Total number of missing values (NA's): `r total_number_missing_values`
@@ -68,7 +68,7 @@ lookup_mean_steps_per_interval <- function(interval) {
   return(mean_steps_for_interval)
 }
 
-```{r}
+```{r remove_nas}
 merged <- merge(data, mean_steps_per_interval)
 ordered <- with(merged, merged[order(date),])
 ordered_na_indices <- which(is.na(ordered$steps))
@@ -80,14 +80,14 @@ data_no_nas$steps[na_indices] <- ordered$mean_steps_per_interval[na_indices]
 
 #### Plot a histogram again after missing data has been imputed
 
-```{r}
+```{r plot_histogram_again_with_no_nas}
 total_steps_per_day_no_nas <- ddply(data_no_nas, .(date), summarise, total_steps = sum(steps))
 with(total_steps_per_day_no_nas, hist(total_steps, main="Total Steps Per Day"))
 
 ```
 
 #### Recalculate mean and median after missing values have been imputed
-```{r}
+```{r recalculate_mean_and_median}
 mean_total_steps_per_day_no_nas <- sprintf("%.2f", with(total_steps_per_day_no_nas, mean(total_steps, na.rm = TRUE)))
 median_total_steps_per_day_no_nas <- sprintf("%.2f", with(total_steps_per_day_no_nas, median(total_steps, na.rm = TRUE)))
 
