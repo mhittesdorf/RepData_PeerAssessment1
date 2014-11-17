@@ -103,7 +103,7 @@ Median total steps per day: `r median_total_steps_per_day_no_nas`
 Yes. The mean and median are now equal!
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+```{r panel}
 weekday_or_weekend <- function(date_factor) {
   result <- c()
   if (is.factor(date_factor)) {
@@ -129,6 +129,4 @@ data_no_nas_with_factors <- transform(data_no_nas, day_type = weekday_or_weekend
 mean_steps_per_interval_day_types <- ddply(data_no_nas_with_factors, .(interval, day_type), summarise, mean_steps_per_interval = mean(steps, na.rm=TRUE))
 with(mean_steps_per_interval_day_types, xyplot(mean_steps_per_interval ~ interval | day_type, layout = c(1,2), type="l"))
 
-
-```
 ```

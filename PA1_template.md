@@ -153,5 +153,4 @@ mean_steps_per_interval_day_types <- ddply(data_no_nas_with_factors, .(interval,
 with(mean_steps_per_interval_day_types, xyplot(mean_steps_per_interval ~ interval | day_type, layout = c(1,2), type="l"))
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
-```
+![plot of chunk panel](figure/panel-1.png) 
