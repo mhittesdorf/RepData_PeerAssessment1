@@ -10,6 +10,9 @@ keep_md: true
 ## Loading and preprocessing the data
 
 ```r
+require(plyr)
+require(lattice)
+
 data <- read.csv("activity.csv")
 summary(data)
 ```
@@ -145,4 +148,10 @@ weekday_or_weekend <- function(date_factor) {
 }
 
 data_no_nas_with_factors <- transform(data_no_nas, day_type = weekday_or_weekend(date))
+
+mean_steps_per_interval_day_types <- ddply(data_no_nas_with_factors, .(interval, day_type), summarise, mean_steps_per_interval = mean(steps, na.rm=TRUE))
+with(mean_steps_per_interval_day_types, xyplot(mean_steps_per_interval ~ interval | day_type, layout = c(1,2), type="l"))
+```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
 ```
